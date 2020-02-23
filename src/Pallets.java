@@ -40,33 +40,28 @@ import java.util.ArrayList;
 
 
 class Pod {
-   Long min;
-   Long max;
+   Long min;// поддоны сортируются по
+   Long max;//
 }
 
-public class Poddon {
+public class Pallets {
+    int lines;
+    ArrayList<Pod> warehouse;
 
 
-    public Poddon() throws FileNotFoundException {
-    }
 
 
-    public static void main(String[] args) throws IOException {
+    private Pallets readWarehouse() throws IOException {
         Long w;
         Long h;
-        int counter = 0;
-        ArrayList<Pod> PA = new ArrayList<>();
+
+        ArrayList<Pod> warehouse = new ArrayList<>();
         BufferedReader br = new BufferedReader(new FileReader("input.txt"));
-        // Scanner sc = new Scanner(new File("input.txt"));
-        //while (sc.hasNext()) {
-        //  int x = sc.nextInt();
-        //...
         int lines = Integer.parseInt(br.readLine());
-        //  System.out.println("lines " + lines);
 
 
         for (int l = 0; l < lines; l++) {
-           Pod p = new Pod();
+            Pod p = new Pod();
             // System.out.println(l);
             String s = "";
             s = br.readLine();
@@ -87,13 +82,37 @@ public class Poddon {
             }
 
 
-            PA.add(l, p);
+            warehouse.add(l, p);
         }
-        Long maxMIN = PA.get(0).min;
-        Long maxMAX = PA.get(0).max;
-        Pod countP = PA.get(0);
+
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        /*
+        readWarehouse;
+        calculate;
+        saveResult;
+        */
+        Pallets pallets = new Pallets();
+        pallets.lines = this.readWarehouse().lines;
+        int counter =
+        pallets.calculate(pallets.lines, pallets.warehouse);
+        String result = Integer.toString(counter);
+
+        pallets.saveResult(result);
+
+
+
+    }
+
+    Integer calculate (int lines, ArrayList<Pod> warehouse ) {
+
+        Long maxMIN = warehouse.get(0).min;
+        Long maxMAX = warehouse.get(0).max;
+        Pod countP = warehouse.get(0);
         for (int l = 0; l < lines; l++) {
-            countP = PA.get(l);
+            countP = warehouse.get(l);
             if (countP.max > maxMAX) {
                 maxMAX = countP.max;
             }
@@ -103,67 +122,31 @@ public class Poddon {
         }
         // System.out.println("maxMIN=" + maxMIN);
         //System.out.println("maxMAX=" + maxMAX);
-        counter = 0;
+        int counter = 0;
         for (int l = 0; l < lines; l++) {
-            countP = PA.get(l);
+            countP = warehouse.get(l);
             if ((countP.max.equals(maxMAX)) || (countP.min.equals(maxMIN))) {
                 counter++;
                 //      System.out.println("l="+l+"counter="+counter);
             }
 
         }
-        //       System.out.println(PA.get(3).min+" "+PA.get(3).max);
-      //  System.out.println(counter);
-        String c1 = Integer.toString(counter);
+        //       System.out.println(warehouse.get(3).min+" "+warehouse.get(3).max);
+        //  System.out.println(counter);
 
+        return counter;
+    }
+
+    void saveResult (String result) throws IOException {
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("output.txt"));
-        bufferedWriter.write(c1);
+        bufferedWriter.write(result);
         bufferedWriter.flush();
         bufferedWriter.close();
-
     }
+
 }
 
-/*Pod tekP=PA.get(0);
-        Pod countP=tekP;
-        for(int l=0;l<lines;l++ ) {
-         countP = PA.get(l);
-         if (
-                 ((countP.w>tekP.w)&&(countP.h>tekP.h)) ||
-                         ((countP.w>tekP.h)&&(countP.h>countP.w))
 
-         ) {
-             counter++;
-             tekP=countP;
-         }
-            System.out.println("counter "+counter);
-            System.out.println("countP.w "+countP.w);
-            System.out.println("countP.h "+countP.h);
-            System.out.println("tekP.w "+tekP.w);
-            System.out.println("tekP.h "+tekP.h);
-            System.out.println(l+" "+PA.get(l).w+" "+PA.get(l).h);
-         }
-
-*/
-
-
-/*
-        String s;
-        while((s=br.readLine())!=null){
-            String[] words = s.split(" ");
-            int a = Integer.parseInt(words[0]);
-            int b = Integer.parseInt(words[1]);
-      //      PA.add(s);
-        }
-     //   long a = sc.nextInt();
-      //  long b = sc.nextInt();
-      //  long c = a+b;
-       // String c1 = Long.toString(c);
-
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("output.txt"));
-     //   bufferedWriter.write(c1);
-        bufferedWriter.flush();
-        bufferedWriter.close(); */
 
 
 
