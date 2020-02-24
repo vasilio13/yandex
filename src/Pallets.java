@@ -40,48 +40,48 @@ import java.util.ArrayList;
 
 public class Pallets {
 
-    public class Pod {
-        Long min;// поддоны сортируются по
-        Long max;//
+    public class Pallet {
+        Long smaller;// меньшая сторона поддона
+        Long larger;// большая сторона поддона
     }
-
+/* набор данных, считываемых из файла и передаваемых в метод calculate*/
     public static class Data {
         int lines;
-        ArrayList<Pod> warehouse;
+        ArrayList<Pallet> warehouse;
     }
 
-
-
     private Data readWarehouse() throws IOException {
-        Long w;
-        Long h;
 
-        ArrayList<Pod> warehouse = new ArrayList<>();
+        Long width;
+        Long length;
+
+
         BufferedReader br = new BufferedReader(new FileReader("input.txt"));
-        int lines = Integer.parseInt(br.readLine());
-
+        int lines = Integer.parseInt(br.readLine());//по условию задачи перая строка содержит число поддонов(строк)
+        ArrayList<Pallet> warehouse = new ArrayList<>(lines);//
 
         for (int l = 0; l < lines; l++) {
-            Pod p = new Pod();
-            // System.out.println(l);
-            String s = "";
+            Pallet p = new Pallet();//создание нового поддона
+            /*чтение строки и вычленение из нее двух long чисел*/
+            String s;
             s = br.readLine();
-            //System.out.println(s);
             String[] words = s.split(" ");
-            //System.out.println(words[0] + " " + words[1]);
-            w = Long.parseLong(words[0]);
-            h = Long.parseLong(words[1]);
-            if (w > h) {
-                p.max = w;
-                p.min = h;
-            } else if (w < h) {
-                p.min = w;
-                p.max = h;
+            width = Long.parseLong(words[0]);
+            length = Long.parseLong(words[1]);
+            /*изначально поддон обладает характеристиками ширина и длина.
+             * при наполнении ArrayList  каждому поддону с проверкой присваиваются
+             * большая и меньшая стороны, хотя очевидно, что длина должна
+             * быть больше ширины.*/
+            if (width > length) {
+                p.larger = width;
+                p.smaller = length;
+            } else if (width < length) {
+                p.smaller = width;
+                p.larger = length;
             } else  {
-                p.min = w;
-                p.max = h;
+                p.smaller = width;
+                p.larger = length;
             }
-
 
             warehouse.add(l, p);
         }
@@ -89,16 +89,10 @@ public class Pallets {
         data.lines = lines;
         data.warehouse = warehouse;
         return (data);
-
     }
 
-
     public static void main(String[] args) throws IOException {
-        /*
-        readWarehouse;
-        calculate;
-        saveResult;
-        */
+
         Pallets pallets = new Pallets();
         Data temp = new Data();
         temp=pallets.readWarehouse();
@@ -109,38 +103,37 @@ public class Pallets {
 
         pallets.saveResult(result);
 
-
-
     }
 
-    Integer calculate (int lines, ArrayList<Pod> warehouse ) {
+    Integer calculate (int lines, ArrayList<Pallet> warehouse ) {
 
-        Long maxMIN = warehouse.get(0).min;
-        Long maxMAX = warehouse.get(0).max;
-        Pod countP = warehouse.get(0);
+        /*первая часть алгоритма находит максимальные значения меньшей и
+        большей сторон поддонов в коллекции ArrayList
+         */
+        Long maxMIN = warehouse.get(0).smaller;
+        Long maxMAX = warehouse.get(0).larger;
+        Pallet countP;
         for (int l = 0; l < lines; l++) {
             countP = warehouse.get(l);
-            if (countP.max > maxMAX) {
-                maxMAX = countP.max;
+            if (countP.larger > maxMAX) {
+                maxMAX = countP.larger;
             }
-            if (countP.min > maxMIN) {
-                maxMIN = countP.min;
+            if (countP.smaller > maxMIN) {
+                maxMIN = countP.smaller;
             }
         }
-        // System.out.println("maxMIN=" + maxMIN);
-        //System.out.println("maxMAX=" + maxMAX);
+        /* вторая часть алгоритма, сравнивающая меньшие и большие стороны поддонов
+           с максимальными значениями, и в случае равенства, увеличивает счетчик
+         */
         int counter = 0;
         for (int l = 0; l < lines; l++) {
             countP = warehouse.get(l);
-            if ((countP.max.equals(maxMAX)) || (countP.min.equals(maxMIN))) {
+            if ((countP.larger.equals(maxMAX)) || (countP.smaller.equals(maxMIN))) {
                 counter++;
                 //      System.out.println("l="+l+"counter="+counter);
             }
 
         }
-        //       System.out.println(warehouse.get(3).min+" "+warehouse.get(3).max);
-        //  System.out.println(counter);
-
         return counter;
     }
 
@@ -150,7 +143,6 @@ public class Pallets {
         bufferedWriter.flush();
         bufferedWriter.close();
     }
-
 }
 
 
