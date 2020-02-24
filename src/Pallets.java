@@ -38,20 +38,21 @@
 import java.io.*;
 import java.util.ArrayList;
 
-
-class Pod {
-   Long min;// поддоны сортируются по
-   Long max;//
-}
-
 public class Pallets {
-    int lines;
-    ArrayList<Pod> warehouse;
+
+    public class Pod {
+        Long min;// поддоны сортируются по
+        Long max;//
+    }
+
+    public static class Data {
+        int lines;
+        ArrayList<Pod> warehouse;
+    }
 
 
 
-
-    private Pallets readWarehouse() throws IOException {
+    private Data readWarehouse() throws IOException {
         Long w;
         Long h;
 
@@ -84,6 +85,10 @@ public class Pallets {
 
             warehouse.add(l, p);
         }
+        Data data = new Data();
+        data.lines = lines;
+        data.warehouse = warehouse;
+        return (data);
 
     }
 
@@ -95,9 +100,11 @@ public class Pallets {
         saveResult;
         */
         Pallets pallets = new Pallets();
-        pallets.lines = this.readWarehouse().lines;
-        int counter =
-        pallets.calculate(pallets.lines, pallets.warehouse);
+        Data temp = new Data();
+        temp=pallets.readWarehouse();
+
+        int counter = pallets.calculate(temp.lines, temp.warehouse);
+
         String result = Integer.toString(counter);
 
         pallets.saveResult(result);
