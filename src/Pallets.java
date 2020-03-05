@@ -44,17 +44,8 @@ public class Pallets {
         Long smaller;// меньшая сторона поддона
         Long larger;// большая сторона поддона
     }
-/* набор данных, считываемых из файла и передаваемых в метод calculate*/
-    public static class Data {
-        int lines;
-        ArrayList<Pallet> warehouse;
-    }
 
-    private Data readWarehouse() throws IOException {
-
-        Long width;
-        Long length;
-
+    private ArrayList<Pallet> readWarehouse() throws IOException {
 
         BufferedReader br = new BufferedReader(new FileReader("input.txt"));
         int lines = Integer.parseInt(br.readLine());//по условию задачи перая строка содержит число поддонов(строк)
@@ -66,8 +57,8 @@ public class Pallets {
             String s;
             s = br.readLine();
             String[] words = s.split(" ");
-            width = Long.parseLong(words[0]);
-            length = Long.parseLong(words[1]);
+            Long width = Long.parseLong(words[0]);
+            Long length = Long.parseLong(words[1]);
             /*изначально поддон обладает характеристиками ширина и длина.
              * при наполнении ArrayList  каждому поддону с проверкой присваиваются
              * большая и меньшая стороны, хотя очевидно, что длина должна
@@ -75,43 +66,31 @@ public class Pallets {
             if (width > length) {
                 p.larger = width;
                 p.smaller = length;
-            } else if (width < length) {
-                p.smaller = width;
-                p.larger = length;
-            } else  {
+            } else {
                 p.smaller = width;
                 p.larger = length;
             }
-
             warehouse.add(l, p);
         }
-        Data data = new Data();
-        data.lines = lines;
-        data.warehouse = warehouse;
-        return (data);
+        return warehouse;
     }
 
     public static void main(String[] args) throws IOException {
 
         Pallets pallets = new Pallets();
-        Data temp = new Data();
-        temp=pallets.readWarehouse();
-
-        int counter = pallets.calculate(temp.lines, temp.warehouse);
-
+        int counter = pallets.calculate(pallets.readWarehouse());
         String result = Integer.toString(counter);
-
         pallets.saveResult(result);
-
     }
 
-    Integer calculate (int lines, ArrayList<Pallet> warehouse ) {
+    Integer calculate (ArrayList<Pallet> warehouse ) {
 
         /*первая часть алгоритма находит максимальные значения меньшей и
         большей сторон поддонов в коллекции ArrayList
          */
         Long maxMIN = warehouse.get(0).smaller;
         Long maxMAX = warehouse.get(0).larger;
+        int lines = warehouse.size();
         Pallet countP;
         for (int l = 0; l < lines; l++) {
             countP = warehouse.get(l);
